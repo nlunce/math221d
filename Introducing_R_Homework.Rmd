@@ -1,0 +1,102 @@
+---
+title: "Summarizing Quantitative Data"
+subtitle: "Homework"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+warning: false
+---
+
+
+# Load the libraries
+```{r}
+
+library(rio)
+library(mosaic)
+library(tidyverse)
+library(car)
+
+```
+
+# Read in Data
+
+```{r}
+
+old_faithful <- rio::import("https://byuistats.github.io/M221R/Data/old_faithful.xlsx")
+view(old_faithful)
+gratitude <- rio::import("https://byuistats.github.io/M221R/Data/gratitude.xlsx")
+view(gratitude)
+
+ext_fav <- favstats(old_faithful$duration, na.rm = TRUE)
+```
+
+
+# Old Faithful
+
+## Calculate the Summary Statistics for Duration
+
+```{r}
+duration_favstat <- favstats(old_faithful$duration, na.rm = TRUE)
+
+```
+
+What is the mean duration time of Old Faithful eruptions?\
+3.488 units\
+What is the standard deviation of duration?\
+1.141 units
+
+
+## Create a Historgram for Duration
+
+Create a histogram and describe the shape of the distribution of duration:
+
+```{r}
+histogram(old_faithful$duration)
+
+
+```
+
+The shape is bi-modal.
+
+## Calculate Summary Statistics for Wait time
+
+```{r}
+wait_favstat <- favstats(old_faithful$wait, na.rm = TRUE)
+wait_favstat
+
+```
+
+What is the mean wait time between eruptions?\
+70.897 units\
+What is the maximum wait time between eruptions?\
+96 units\
+The middle 50% of wait times will be between what 2 numbers?\
+The middle 50% will be between Q1 and Q3.
+
+
+# Gratitude
+
+Calculate the summary statistics for both groups:
+
+```{r}
+fav <- favstats(gratitude$happiness ~ gratitude$treatment)
+fav
+#interested category then column you want to break it up by.
+```
+
+Which treatment group has the highest mean?\
+Grateful\
+Which treatment group has the largest spread of happiness scores?\
+Grateful\
+Create a graph with boxplots for each group:
+
+```{r}
+boxplot(gratitude$happiness ~ gratitude$treatment)
+
+```
+
+Which group has the lowest first quartile?\
+Hassles
+
+
