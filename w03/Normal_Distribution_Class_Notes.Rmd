@@ -88,7 +88,7 @@ What's the probability of getting a score LESS than 4?
 
 ```{r}
 
-x <- 
+x <- 6
 mu <- 
 stdev <- 
 
@@ -109,9 +109,9 @@ What's the probability of a false start? (that is a reaction time LESS than 0.1)
 
 ```{r}
 
-x <- 
-mu <- 
-stdev <- 
+x <- .1
+mu <- .2
+stdev <- .03
 
 z <- (x-mu) / stdev
   
@@ -119,7 +119,18 @@ pnorm(z)  # LESS THAN
 1-pnorm(z) # GREATER THAN
 
 ```
+```{r}
+#crime
+x <- 723/100000
+mu <-  367/100000
+stdev <- 160/100000
+z <- (x-mu) / stdev
+z
 
+pnorm(z)  # LESS THAN
+1-pnorm(z) # GREATER THAN
+
+```
 
 # Area BETWEEN 2 Points
 
