@@ -1,0 +1,108 @@
+---
+title: "Normal Probability Calculations for Means"
+subtitle: "Homework Quiz"
+author: "Nathan Lunceford"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+---
+
+Use the following information to answer the next 4 questions.
+
+The Law School Admission Test (LSAT) is required for admission to many law schools. The scores on the LSAT are approximately normal with mean of 150 and standard deviation of 9. Queen's School of Business in Kingston, Ontario requires a minimum LSAT score of 157 for admission.
+
+You can use the code chunk below for all the questions.  Be sure to run the whole code chunk each time you update the information to make sure you get the right answers.
+
+```{r, include=FALSE, echo=FALSE, eval=FALSE}
+# Calculator
+xbar <-8540
+mu <- 8544
+sigma <- 12
+n <- 50
+sigma_xbar <- sigma / sqrt(n)
+sigma_xbar
+
+z <- (xbar - mu) / sigma_xbar
+z
+
+# Probability of a sample mean being less than our xbar:
+pnorm(z)
+
+# Prob. of a sample mean being higher than our xbar:
+1-pnorm(z)
+
+# Prob of being bewteen A and B
+
+A <- 3
+B <- 3.5
+  
+pnorm(B, mu, sigma_xbar) - pnorm(A, mu, sigma_xbar)
+
+# Percentiles
+
+percentile <- 
+qnorm(percentile, mu, sigma_xbar)
+
+
+```
+
+# LSAT
+
+__Question 1__:  What is the z-score corresponding to an LSAT score of 157? (HINT: What is the sample size for *an* LSAT Score?)\
+.7777778\
+
+__Question 2__: What is the probability that a randomly selected person who took the LSAT would score above 157?\
+ 0.21835\
+ 
+__Question 3__: What is the probability that the mean score for 5 randomly selected people who took the LSAT would be above 157?\
+.04100296\
+
+__Question 4__: What is the probability that the mean score for 10 randomly selected people who took the LSAT would be above 157?\
+.00695558\
+
+# GPA
+
+Suppose the mean GPA of BYU-Idaho students is 3.7 and the standard deviation is 0.9. It is well known that this distribution is left-skewed.
+
+If you take a random sample of 64 BYU-Idaho students:
+
+__Question 1__: What is the mean of the distribution of sample means of these GPA scores?\
+3.7\
+
+__Question 2__: What is the Standard Deviation of the distribution of sample means of these GPA scores?\
+.1125\
+
+__Question 3__: What is the shape of the distribution of sample means?\
+The shape of the distribution of sample means will be approximately normal.\
+
+
+__Question 4__: What is the probability that the mean GPA for 64 randomly selected BYU-Idaho students will be between 3.0 and 3.5?\
+.03772018\
+
+# Tankers
+
+Tanker trucks are designed to carry huge quantities of gasoline from refineries to filling stations. A factory that manufactures the tank of the trucks claims to manufacture tanks with a capacity of 8550 gallons of gasoline. The actual capacity of the tanks is normally distributed with mean, $\mu = 8544$ gallons and standard deviation, $\sigma = 12$ gallons.
+
+__Question 1__: Find the z-score corresponding to a tank with a capacity of 8550 gallons.\
+.5\
+
+
+__Question 2__: What is the probability that a randomly selected tank will have a capacity of less than 8550 gallons?\
+.6914625\
+
+
+__Question 3__: A simple random sample of n = 20 tanks will be selected. Find the z-score corresponding to a sample mean capacity for 20 tanks of 8550.\
+2.236068\
+
+
+__Question 4__: A simple random sample of n = 50 tanks will be selected. What is the probability that the mean capacity for these 50 tanks will be greater than 8540 gallons?\
+.9907889\
+
+
+
+
+
+
+
+

@@ -1,0 +1,343 @@
+---
+title: "Application Activity"
+subtitle: "Unit 1 Review"
+author: "Nathan Lunceford"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+---
+
+# Assessment Objectives
+
+  * Apply the 3 rules of probability in different scenarios
+  * Describe the 5 steps of the statistical process
+  * Differentiate between an observational study and an experiment
+  * Differentiate between a population and a sample
+  * Describe the 4 random sampling schemes
+  * Explain importance of random sampling
+<br/>
+  * Distinguish between quantitative and categorical variables
+  * Create graphical summaries of data (boxplots, histograms) and be able to make conclusions based on the graphs
+  * Create numerical summaries of data (mean, sd, 5 number summary, percentiles) and compare groups (centers, spreads)
+  * Distinguish between a parameter and a statistic
+  * Determine the 5 number summary from a boxplot
+<br/>
+  * State the properties of a normal distribution
+  * Calculate the z-score for an individual from a normal population with mean, $\mu$, and std. dev, $\sigma$
+  * Calculate probabilities (>, <, between) of certain values given $\mu$ and $\sigma$
+<br/>
+  * Describe the concept of a sampling distribution of the sample mean
+  * State the Central Limit Theorem
+  * Determine the mean of the sampling distribution of the sample mean given $\mu$ and $\sigma$
+  * Determine the std. dev. of the sampling distribution of the sample mean given $\mu$ and $\sigma$
+  * Determine the _shape_ of the sampling distribution given a sample size, n, and $\mu$ and $\sigma$
+  * State the Law of Large Numbers
+  
+  
+# Design the Study
+
+You and a colleague are interested in studying the relationship between social media use and mental health among youth ages 18-24. You decide to use the Psychological Wellbeing Scale (PWB) developed by Stanford University as your metric for comparison (the response variable).
+
+__Q1.1:__ 
+
+List 5 factors (explanatory variables) related to social media use that might impact Wellbeing.  
+
+Include whether or not the factors are quantitative or categorical (include at least one of each):
+
+1. **Time spent on social media (Quantitative):** The total number of hours per day spent on social media platforms.
+2. **Type of social media platforms used (Categorical):** Different platforms like Facebook, Instagram, Twitter, TikTok, etc.
+3. **Purpose of social media use (Categorical):** Reasons for using social media, such as socializing, news, entertainment, education, etc.
+4. **Number of social media accounts (Quantitative):** The total number of different social media accounts a person maintains.
+5. **Engagement in social media activities (Quantitative):** The frequency of activities such as posting, liking, commenting, and sharing content.
+
+__Q1.2:__ 
+
+What is the population of the study?\
+
+**Youth ages 18-24**
+
+
+
+__Q1.3:__ 
+
+Suppose you are *not* resource limited.  Briefly describe the sampling scheme you would use and why you would choose it to best represent the population:\
+
+**I would use stratified sampling to ensure that different subgroups within the population are adequately represented.**
+
+ 
+__Q1.4:__ 
+
+Give a brief description of the other 3 types of sampling schemes and explain why they don't make sense in this situation:  
+
+1. **Simple Random Sampling (SRS)**
+    * Reason it doesn't make sense: While SRS is straightforward and reduces bias, it may not ensure that all key subgroups within the population are adequately represented.
+2. **Systematic Sampling**
+    * Reason it doesn't make sense: Systematic sampling might introduce periodicity biases.
+3. **Cluster Sampling**
+    * Reason it doesn't make sense: Cluster sampling can introduce cluster-specific biases and may not be efficient if clusters (e.g., specific universities or cities) have unique social media usage patterns that aren't representative of the broader population.
+
+
+
+__Q1.5:__ 
+
+Suppose it is impractical to sample from the population described in Q1.2.  What population might be more feasible to sample from?\
+
+**A more feasible population to sample from might be college students aged 18-24.**
+
+
+
+__Q1.6:__ 
+
+How would modifying the population of interest impact your sampling scheme?\
+
+**Modifying the population of interest would require changing the groups for sampling and adjusting the sample size.**
+
+__Q1.7:__ 
+
+Suppose you sent out a Facebook survey to all of your followers and asked them to respond if they are in your target demographic.  How might this impact the conclusions of your study?\
+
+**Sending a Facebook survey to your followers could introduce self-selection bias which could result in a non-representative sample.**
+
+
+# Describe/Summarize the Data
+
+For this section you will program in R.  Don't forget to load the libraries first:
+
+```{r, echo=FALSE, include=FALSE}
+
+library(rio)
+library(mosaic)
+library(tidyverse)
+library(car)
+library(ggplot2)
+
+
+```
+
+## Housing Prices in Rexburg
+
+You are interested housing prices in Rexburg, Idaho.  Load the housing data and respond to the following questions.  
+
+
+```{r}
+# Load the data:
+housing <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/MadisonCountyRealEstate.xlsx') %>% select(ListPrice, Bedrooms)
+
+```
+
+__Q2.1:__ 
+
+Create a histogram of list price. 
+
+```{r}
+ggplot(housing, aes(x = ListPrice)) + 
+  geom_histogram(binwidth = 50000, fill = "blue", color = "black") + 
+  labs(title = "Histogram of List Prices", x = "List Price", y = "Frequency")
+```
+
+What is the shape of the distribution of list prices for homes in Rexburg.\
+
+**The shape of the distribution of list prices for homes in Rexburg is right-skewed, with most prices clustered at the lower end and a few higher-priced homes.**
+
+__Q2.2:__ 
+
+Calculate the mean, standard deviation, 5 number summary and sample size of housing prices for each number of bedrooms.
+
+```{r}
+housing_summary <- favstats(ListPrice ~ Bedrooms, data = housing)
+knitr::kable(housing_summary)
+
+```
+
+What is the standard deviation of homes with 3 bedrooms?\
+
+**The standard deviation of homes with 3 bedrooms is $79,099.36.**
+
+How do you interpret that number?\
+
+**The standard deviation indicates that the list prices of 3-bedroom homes in Rexburg vary by approximately $79,099.36 around the mean price. This means that the prices of these homes are kind of spread out over a wide range.**
+
+
+__Q2.3:__
+
+What is the maximum value home price for a 2 bedroom house?\
+
+**$160,000**
+
+Suppose there was a typo in the data and the maximum price for a 2 bedroom house was accidentally entered as $1,700,000.\ 
+
+How would the median change?\
+
+**The median would remain unchanged, as it is not affected by extreme values.**
+
+How would the mean change?\  
+
+**The mean would increase, as it is sensitive to extreme values.**
+
+How would the standard deviation change?\
+
+**The standard deviation would increase, as it measures the spread of the data and would be affected by the large value.**
+
+__Q2.4:__ 
+
+Create a side-by-side boxplot of housing prices for each group.  **Modify the color scheme so that each boxplot is a different color**.  
+
+```{r}
+ggplot(housing, aes(x = factor(Bedrooms), y = ListPrice, fill = factor(Bedrooms))) + 
+  geom_boxplot() + 
+  scale_fill_brewer(palette = "Set3") + 
+  labs(title = "Boxplot of List Prices by Number of Bedrooms", x = "Number of Bedrooms", y = "List Price")
+
+```
+
+What trends do you notice?\
+
+**In general, the more bedrooms a house has the more the house costs. The difference in price between 4 and 3 bedroom homes is minimal.**
+
+Why might the box plot for 7 bedroom homes look so different than the others?\
+
+**The box plot for 7-bedroom looks different due to fewer data points and them being outliers.**
+
+
+# Probability 
+
+## Hair Color
+
+Brother Cannon has been collecting hair color data about his students for the last several semesters.  The proportion of students with each hair color are as follows:
+
+(run the following R chunk to see the table more clearly)
+
+```{r}
+knitr::kable(tibble(Red="???", Brown=.37, Black=.35, Blond = .22, Other=.02))
+```
+
+__Q3.1:__  
+
+What percent of Brother Cannon's students have red hair?\
+
+**Four percent of students have red hair.**
+
+__Q3.2:__  
+
+
+What's the probability that a randomly selected student has either black or brown hair?\
+
+**The probability that a randomly selected student has either black or brown hair is 72%.**
+
+## Social Media Use
+
+__Q4.1:__
+
+The number of hours students spend on social media a week is known to be left skewed with a mean of 12 hours and a standard deviation 1.5.  
+
+Suppose we take a random sample of 50 students and calculate the average time they spend on social media.
+
+__Q4.2:__
+
+What is the mean of the distribution of sample means for this sample size?\ 
+
+**The mean is the same as the population mean: 12 hours.**
+
+__Q4.3:__
+
+What is the standard deviation of sample means for this sample size?\  
+
+**The standard deviation of sample means for this sample size would be about .212.**
+
+__Q4.4:__
+
+What is the shape of the distribution of sample means for this sample size and why?\
+
+**The distribution of sample means will be approximately normal due to the Central Limit Theorem.**
+
+## Faculty Salaries
+
+Faculty salaries at a university are known to be normally distributed with a mean of \$108,552 and a standard deviation of \$13,277.
+
+You randomly sample n=15 faculty members and calculate their average salary.  
+
+__Q5.1:__
+
+What is the mean of the distribution of sample means for this sample size?\ 
+
+**The mean is the same as the population mean: $108,552.**
+
+__Q5.2:__
+
+What is the standard deviation of sample means for this sample size?\ 
+
+**The standard deviation of the sample means for a sample size of 15 is approximately $3428.11**
+
+__Q5.3:__
+
+What is the shape of the distribution of sample means for this sample size and why?\ 
+
+**The shape of the distribution of sample means for this sample size is approximately normal because the population from which the samples are drawn is normally distributed.**
+
+
+## Normal Probability Calculations
+
+High blood pressure is strongly associated with a host of diseases and increases risk of cardiac arrest (hear attacks) in older patients.  
+
+Suppose that systolic blood pressure in the US is normally distributed with a mean = 128 and a standard deviation of 11.  
+
+Use the following calculator to answer the questions below: 
+
+```{r, include=FALSE, echo=FALSE, eval=FALSE}
+# Calculator
+xbar <- 
+mu <- 128
+sigma <- 11
+n <- 1
+sigma_xbar <- sigma / sqrt(n)
+sigma_xbar
+
+z <- (xbar - mu) / sigma_xbar
+z
+
+# Probability of a sample mean being less than our xbar:
+pnorm(z)
+
+# Prob. of a sample mean being higher than our xbar:
+1-pnorm(z)
+
+# Prob of being between A and B
+
+A <- 1
+B <- 2
+  
+pnorm(B, mu, sigma_xbar) - pnorm(A, mu, sigma_xbar)
+
+# Percentiles
+
+percentile <- .2
+qnorm(percentile, mu, sigma_xbar)
+
+
+```
+
+__Q6.1:__
+
+What is the probability that a randomly selected person in the US has a systolic blood pressure of greater than 145?\ 
+
+**6.11%**
+
+__Q6.2__
+
+What is the probability that a randomly selected group of 10 people in the US have an *average* blood pressure less than 130?\ 
+
+**71.73%**
+
+__Q6.3:__
+
+Your doctor says you're in great shape, and that you are in the 20th percentile for systolic blood pressure.
+
+What does it mean that you are the 20th percentile?\ 
+
+**Being in the 20th percentile means that your systolic blood pressure is lower than 80% of the population.**
+
+What is your blood pressure?\
+
+**My blood pressure would be approximately 118.74.**
+
