@@ -20,6 +20,7 @@ This example is taken from an experiment listed in the R help files under `?CO2`
 library(mosaic)
 library(rio)
 library(tidyverse)
+library(ggplot2)
 
 ```
 
@@ -28,8 +29,8 @@ library(tidyverse)
 # Notice we don't have to import data today (YAY!) because this data set is included in the base R functionality
 
 head(CO2)
-
-?CO2
+view(CO2)
+#?CO2
 
 ```
 
@@ -49,7 +50,9 @@ Create a table with the overall summary statistics for uptake:
 
 # This is NEW!  if you tell R to knit the favstats output using the "kable" function, it will look a lot nicer when the document is rendered.
 
-knitr::kable(favstats(CO2$uptake))
+uptake_favstat <- favstats(CO2$uptake)
+
+knitr::kable(uptake_favstat)
 
 ```
 
@@ -57,7 +60,13 @@ knitr::kable(favstats(CO2$uptake))
 Create a histogram of the uptake data:
 
 ```{r}
-
+hist(CO2$uptake,
+     main = "CO2 Uptake Rate Frequency",
+     xlab = "Uptake Rate",
+     ylab = "Frequency",
+     col = "skyblue",  
+     border = "white", 
+     breaks = 20)     
 ```
 
 
@@ -70,7 +79,11 @@ We will now look at how other factors might impact CO2 uptake.
 Create a table of summary statistics of uptake for each type of plants used in the experiment.
 
 ```{r}
+# Calculate favorite statistics for the uptake variable grouped by Type
+uptake_type_favstat <- favstats(~uptake | Type, data = CO2)
 
+# Print the summary statistics
+knitr::kable(uptake_type_favstat)
 
 ```
 
@@ -78,6 +91,13 @@ Create a side-by-side boxplot of uptake for each type of plants used in the expe
 
 ```{r}
 
+ggplot(data = CO2, aes(x = Type, y = uptake, fill = Type)) +
+  geom_boxplot() +
+  labs(title = "CO2 Uptake by Plant Type",
+       x = "Plant Type",
+       y = "Uptake Rate") +
+  theme_minimal() +
+  theme(legend.position = "none")  
 
 ```
 
@@ -88,14 +108,24 @@ Create a side-by-side boxplot of uptake for each type of plants used in the expe
 Create a table of summary statistics of uptake for each treatment used in the experiment.
 
 ```{r}
+# Calculate favorite statistics for the uptake variable grouped by treatment
+uptake_treatment_favstat <- favstats(~uptake | Treatment, data = CO2)
 
+# Print the summary statistics
+knitr::kable(uptake_treatment_favstat)
 
 ```
 
 Create a side-by-side boxplot of uptake for each treatment used in the experiment.
 
 ```{r}
-
+ggplot(data = CO2, aes(x = Treatment, y = uptake, fill = Treatment)) +
+  geom_boxplot() +
+  labs(title = "CO2 Uptake by Treatment",
+       x = "Treatment",
+       y = "Uptake Rate") +
+  theme_minimal() +
+  theme(legend.position = "none") 
 
 ```
 
@@ -105,14 +135,24 @@ Create a side-by-side boxplot of uptake for each treatment used in the experimen
 Create a table of summary statistics of uptake for each level of CO2 found in the experiment.
 
 ```{r}
+# Calculate favorite statistics for uptake for each level of CO2 found in the experiment
+uptake_conc_favstat <- favstats(~uptake | conc, data = CO2)
 
+# Print the summary statistics
+knitr::kable(uptake_conc_favstat)
 
 ```
 
 Create a side-by-side boxplot of uptake for each level of CO2 found used in the experiment.
 
 ```{r}
-
+ggplot(data = CO2, aes(x = as.factor(conc), y = uptake, fill = as.factor(conc))) +
+  geom_boxplot() +
+  labs(title = "CO2 Uptake by Concentration Level",
+       x = "CO2 Concentration Level",
+       y = "Uptake Rate") +
+  theme_minimal() +
+  theme(legend.position = "none")  
 
 ```
 
@@ -123,15 +163,22 @@ Create a side-by-side boxplot of uptake for each level of CO2 found used in the 
 
 The background suggests this study was an experiment.  In your own words, describe the difference between an experiment and an observational study. 
 
-What would this study have looked like if it had been an observational study?
+What would this study have looked like if it had been an observational study?\
 
+**An experiment involves manipulation of variables, an observational study involves observing and measuring variables without  manipulating them.**\
+\
+**To make the experiment an observational study you would have to change the focus from understanding the direct impact of various factors on uptake to observing patterns in how different naturally occurring factors might correlate with uptake in real-world settings.**\
 
 ## What is the Population of this study?  
 
-Describe in your own words what the population of this study could be.  How broad can we make our conclusions?
+Describe in your own words what the population of this study could be.  How broad can we make our conclusions?\
+
+**The population in this experiment are the the type of plants being studied.**
 
 ## What are your recommendations?
 
-If you were to recommend a planting scenario to maximize CO2 uptake, what would you recommend based on the summaries provided?
+If you were to recommend a planting scenario to maximize CO2 uptake, what would you recommend based on the summaries provided?\
+
+**I would recommend planting the Quebec type, not chilling the plants and having a co2 concentration of about 1000 or higher.**
 
 

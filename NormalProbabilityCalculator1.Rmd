@@ -1,0 +1,40 @@
+---
+title: "Normal Probability Calculator 1"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+---
+
+```{r}
+
+# Sample Mean
+x <- 157
+
+# Hypothesized Mean
+mu <- 150.7
+
+# Population Standard deviation
+sigma <- 10.2
+
+# Z-score:  number of standard deviations above the mean
+z <- (x-mu) / sigma
+z
+
+
+# Probability of observing a z-score LESS THAN the one we observed (left tail)
+pnorm(z)
+
+# Probability of observing a z-score GREATER THAN the one we observed (Right Tail)
+1-pnorm(z)
+
+
+# For calculating the area between 2 numbers
+A <- 61.5
+B <- 68.5
+pnorm(B, mu, sigma) - pnorm(A, mu, sigma)
+
+# Find the X_bar associated with a spceific percentile
+qnorm(.35, mu, sigma)
+
+```
