@@ -218,6 +218,11 @@ Repeat the above analysis comparing how peoples' happiness scores depend on thei
   1. Create a new dataset called `lying` that excludes the `#N/A` values in `Lying` and the Happiness scores outliers, and includes only "Happiness_score" and "Lying":
 
 ```{r}
+steve <- happieness %>%
+  filter(Happiness_score <= 15,
+         Happiness_score >= 0,
+         Lying != "#N/A"
+         )
 
 ```
 
