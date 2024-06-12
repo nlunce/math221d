@@ -1,0 +1,481 @@
+---
+title: "Unit 1 Exam Notes"
+author: "Nathan Lunceford"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+---
+
+
+
+```{r, echo=FALSE, include=FALSE}
+
+# Load the Libraries
+
+library(rio)
+library(mosaic)
+library(tidyverse)
+library(car)
+
+```
+# Table of Contents
+
+1. [The Central Limit Theorem](#the-central-limit-theorem)
+2. [Sampling Methods](#sampling-methods)
+   - [Simple Random Sampling](#simple-random-sampling)
+   - [Stratified Random Sampling](#stratified-random-sampling)
+   - [Systematic Sampling](#systematic-sampling)
+   - [Cluster Sampling](#cluster-sampling)
+   - [Convenience Sampling](#convenience-sampling)
+3. [Standard Deviation](#standard-deviation)
+   - [Steps to Calculate Standard Deviation](#steps-to-calculate-standard-deviation)
+   - [Example Calculation](#example-calculation)
+   - [Importance of Standard Deviation](#importance-of-standard-deviation)
+4. [The Normal Distribution](#the-normal-distribution)
+5. [Z-Score](#z-score)
+6. [Summary Statistics](#summary-statistics)
+7. [Creating a Histogram with ggplot2](#creating-a-histogram-with-ggplot2)
+8. [Creating a Box Plot with ggplot2](#creating-a-box-plot-with-ggplot2)
+
+
+# The Central Limit Theorem
+
+The Central Limit Theorem states that for a large enough sample size ($n>30$) the distribution of _sample means_ is approximately normal with mean, $\mu_{\bar{x}} = \mu$ and $\sigma_{\bar{x}} = \frac{\sigma}{\sqrt{n}}$ regardless of the distribution of the population.
+
+We can assume the distribution of sample means is approximately normal if:
+
+1. The population is normally distributed
+2. $n > 30$
+
+Don't forget, that if the population is normally distributed, so is the distribution of sample means __regardless of sample size__.
+
+# Sampling Methods
+
+Sampling methods are techniques used to select a subset of individuals from a population to estimate characteristics of the whole population. Here are some common sampling methods:
+
+## Simple Random Sampling
+
+Simple random sampling is a method where each member of the population has an equal chance of being selected. It is the most straightforward sampling technique.
+
+**Advantages:**
+- Easy to understand and implement.
+- Ensures unbiased representation if the sample size is sufficiently large.
+
+**Disadvantages:**
+- Can be impractical for large populations.
+- Requires a complete list of the population.
+
+## Stratified Random Sampling
+
+Stratified random sampling involves dividing the population into distinct subgroups or strata (e.g., based on age, gender, income) and then randomly sampling from each stratum. This method ensures representation from each subgroup.
+
+**Advantages:**
+- Ensures representation from all subgroups.
+- Can provide more precise estimates than simple random sampling.
+
+**Disadvantages:**
+- Requires detailed information about the population.
+- More complex to organize and analyze.
+
+## Systematic Sampling
+
+Systematic sampling involves selecting every k-th individual from a list of the population, where k is a fixed interval. The starting point is chosen randomly.
+
+**Advantages:**
+- Simple to implement.
+- Ensures evenly spread sample points across the population.
+
+**Disadvantages:**
+- Can introduce bias if there is a hidden pattern in the population list.
+- Not suitable if the population is not randomly ordered.
+
+## Cluster Sampling
+
+Cluster sampling divides the population into clusters (usually based on geography or other natural groupings) and then randomly selects entire clusters for study. All individuals within selected clusters are included in the sample.
+
+**Advantages:**
+- Cost-effective and time-efficient for large populations.
+- Useful when a complete list of the population is not available.
+
+**Disadvantages:**
+- Can introduce higher sampling error if clusters are not homogeneous.
+- Less precise than stratified sampling.
+
+## Convenience Sampling
+
+Convenience sampling involves selecting individuals who are easiest to reach or readily available. It is a non-probability sampling method.
+
+**Advantages:**
+- Easy and quick to carry out.
+- Low cost.
+
+**Disadvantages:**
+- Highly susceptible to bias.
+- Results may not be generalizable to the entire population.
+
+# Standard Deviation
+
+Standard deviation is a measure of the amount of variation or dispersion in a set of values. It quantifies how spread out the numbers in a data set are around the mean (average) of the data set. Here is how standard deviation is calculated:
+
+## Steps to Calculate Standard Deviation
+
+1. **Calculate the Mean (Average):**
+   - Add up all the numbers in the data set.
+   - Divide the sum by the number of data points $n$.
+
+   $$ \mu = \frac{\sum_{i=1}^{n} x_i}{n} $$
+
+2. **Calculate Each Deviation from the Mean:**
+   - Subtract the mean from each data point to find the deviation for each value.
+
+   $$ d_i = x_i - \mu $$
+
+3. **Square Each Deviation:**
+   - Square each of the deviations to eliminate negative values and emphasize larger deviations.
+
+   $$ d_i^2 = (x_i - \mu)^2 $$
+
+4. **Calculate the Variance:**
+   - Find the average of these squared deviations.
+   - For a **population** variance, divide by the number of data points $n$.
+   - For a **sample** variance, divide by the number of data points minus one $(n - 1)$.
+
+   $$ \sigma^2 = \frac{\sum_{i=1}^{n} (x_i - \mu)^2}{n} $$
+
+   $$ s^2 = \frac{\sum_{i=1}^{n} (x_i - \mu)^2}{n - 1} $$
+
+5. **Calculate the Standard Deviation:**
+   - Take the square root of the variance to get the standard deviation.
+
+   $$ \sigma = \sqrt{\frac{\sum_{i=1}^{n} (x_i - \mu)^2}{n}} $$
+
+   $$ s = \sqrt{\frac{\sum_{i=1}^{n} (x_i - \mu)^2}{n - 1}} $$
+
+## Example Calculation
+
+Consider the following data set: 2, 4, 6, 8, 10.
+
+1. **Calculate the Mean:**
+
+   $$ \mu = \frac{2 + 4 + 6 + 8 + 10}{5} = 6 $$
+
+2. **Calculate Each Deviation from the Mean:**
+
+   $$ d_1 = 2 - 6 = -4 $$
+   $$ d_2 = 4 - 6 = -2 $$
+   $$ d_3 = 6 - 6 = 0 $$
+   $$ d_4 = 8 - 6 = 2 $$
+   $$ d_5 = 10 - 6 = 4 $$
+
+3. **Square Each Deviation:**
+
+   $$ (-4)^2 = 16 $$
+   $$ (-2)^2 = 4 $$
+   $$ 0^2 = 0 $$
+   $$ 2^2 = 4 $$
+   $$ 4^2 = 16 $$
+
+4. **Calculate the Variance (Sample):**
+
+   $$ s^2 = \frac{16 + 4 + 0 + 4 + 16}{5 - 1} = \frac{40}{4} = 10 $$
+
+5. **Calculate the Standard Deviation (Sample):**
+
+   $$ s = \sqrt{10} \approx 3.16 $$
+
+Therefore, the standard deviation of the data set is approximately 3.16.
+
+## Importance of Standard Deviation
+
+Standard deviation is an important statistic that provides insight into the variability and consistency of data. A low standard deviation indicates that the data points tend to be close to the mean, while a high standard deviation indicates that the data points are spread out over a wider range of values. This measure is widely used in statistics, finance, science, and many other fields to analyze and interpret data.
+
+
+
+# Z-Score
+
+A Z-score represents the number of standard deviations a data point is from the mean. It is a measure of how unusual or typical a value is within a given data set. The formula for calculating a Z-score is:
+
+$$ Z = \frac{X - \mu}{\sigma} $$
+
+**where:**\
+
+- $X$ is the value,
+- $\mu$ is the mean of the data set,
+- $\sigma$ is the standard deviation of the data set.
+
+## Interpretation of Z-Scores
+
+- **Z-score of 0:** The value is exactly at the mean.
+- **Positive Z-score:** The value is above the mean.
+- **Negative Z-score:** The value is below the mean.
+- **Z-score of 1:** The value is one standard deviation above the mean.
+- **Z-score of -1:** The value is one standard deviation below the mean.
+
+## Example Calculation
+
+Consider a data set with a mean $\mu$ of 50 and a standard deviation $\sigma$ of 10. Calculate the Z-score for a value $X$ of 70.
+
+1. **Calculate the Z-score:**
+
+   $$ Z = \frac{70 - 50}{10} = \frac{20}{10} = 2 $$
+
+# Summary Statistics
+
+We can easily extend `favstats()` to output our favorite statistics for multiple groups. First, we must identify the quantitative factor we want to compare. For example, we could compare agreeableness between the sexes.
+
+## Step-by-Step Guide to Using favstats() for Multiple Groups
+
+### Step 1: Load the mosaic Library
+
+First, make sure you have the `mosaic` library installed and loaded.
+
+```{r}
+# Load the mosaic library
+library(mosaic)
+```
+
+### Step 2: Prepare Your Data
+
+Ensure your data is in a data frame format. For this example, we'll use the built-in `mtcars` dataset and compare the miles per gallon (mpg) between different numbers of cylinders.
+
+```{r}
+# View the first few rows of the mtcars dataset
+head(mtcars)
+```
+
+### Step 3: Use favstats() to Calculate Summary Statistics
+
+Use the `favstats()` function to calculate summary statistics for the quantitative variable grouped by the categorical variable.
+
+```{r}
+# Calculate summary statistics for mpg grouped by the number of cylinders
+mpg_summary <- favstats(mpg ~ cyl, data = mtcars)
+mpg_summary
+```
+
+This will output a table with summary statistics such as mean, median, standard deviation, minimum, maximum, and quartiles for the miles per gallon (mpg) grouped by the number of cylinders (cyl).
+
+### Step 4: Interpret the Output
+
+The output from `favstats()` will provide the following statistics for each group:
+
+- **min:** Minimum value
+- **Q1:** First quartile (25th percentile)
+- **median:** Median value (50th percentile)
+- **Q3:** Third quartile (75th percentile)
+- **max:** Maximum value
+- **mean:** Mean (average) value
+- **sd:** Standard deviation
+- **n:** Number of observations
+
+For example, if the output shows:
+
+```
+  cyl  min   Q1 median   Q3  max  mean       sd  n
+1   4 21.4 22.8   26.0 30.4 33.9 26.66364 4.510988 11
+2   6 17.8 18.65 19.7 21.0 21.4 19.74286 1.453567 7
+3   8 10.4 14.4   15.2 16.2 19.2 15.10000 2.560048 14
+```
+
+It indicates that cars with 4 cylinders have a mean mpg of approximately 26.66 with a standard deviation of 4.51, while cars with 8 cylinders have a mean mpg of approximately 15.10 with a standard deviation of 2.56.
+
+## Summary
+
+Using `favstats()` in the `mosaic` package, you can easily calculate summary statistics for a quantitative variable across multiple groups. This involves:
+
+1. **Loading the mosaic library:** Use `library(mosaic)` to load the library.
+2. **Preparing your data:** Ensure your data is in a data frame.
+3. **Using favstats():** Calculate summary statistics for the quantitative variable grouped by the categorical variable.
+4. **Interpreting the output:** Understand the key statistics provided by `favstats()`.
+5. **Visualizing the data:** Use `ggplot2` to create visual representations like box plots to complement the summary statistics.
+
+
+
+# Creating a Histogram with ggplot2
+
+## Step 1: Load the ggplot2 Library
+
+First, make sure you have the `ggplot2` library installed and loaded.
+
+```{r}
+# Load the ggplot2 library
+library(ggplot2)
+```
+
+## Step 2: Prepare Your Data
+
+Ensure your data is in a data frame format. For this example, we'll use the built-in `mtcars` dataset.
+
+```{r}
+# View the first few rows of the mtcars dataset
+head(mtcars)
+```
+
+## Step 3: Create a Basic Histogram
+
+To create a basic histogram, use the `ggplot()` function along with `geom_histogram()`.
+
+```{r}
+# Create a basic histogram of the 'mpg' (miles per gallon) column
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth = 2) +
+  labs(title = "Histogram of Miles Per Gallon",
+       x = "Miles Per Gallon",
+       y = "Frequency")
+```
+
+## Step 4: Customize the Histogram
+
+You can customize the appearance of the histogram by adjusting the bin width, colors, and adding more labels.
+
+```{r}
+# Customized histogram with adjusted bin width, colors, and labels
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth = 2, fill = "blue", color = "black") +
+  labs(title = "Customized Histogram of Miles Per Gallon",
+       x = "Miles Per Gallon",
+       y = "Frequency") +
+  theme_minimal()
+```
+
+## Step 5: Faceting the Histogram
+
+Faceting allows you to create multiple histograms based on a categorical variable. For example, we can facet by the number of cylinders.
+
+```{r}
+# Faceted histogram by the number of cylinders
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth = 2, fill = "blue", color = "black") +
+  labs(title = "Histogram of Miles Per Gallon by Cylinder Count",
+       x = "Miles Per Gallon",
+       y = "Frequency") +
+  facet_wrap(~ cyl) +
+  theme_minimal()
+```
+
+
+Simple way: \
+
+```{r}
+histogram(mtcars$mpg,
+          main = "Histogram of Miles Per Gallon by Cylinder Coun",
+          xlab = "Miles Per Gallon",
+          ylab = "Frequency",
+          col = "skyblue",  
+          border = "white", 
+          breaks = 20)
+
+```
+
+## Summary
+
+Creating histograms with `ggplot2` involves the following steps:
+
+1. **Load the ggplot2 library:** Use `library(ggplot2)` to load the library.
+2. **Prepare your data:** Ensure your data is in a data frame.
+3. **Create a basic histogram:** Use `ggplot()` with `geom_histogram()`.
+4. **Customize the histogram:** Adjust bin width, colors, and labels using additional arguments and functions.
+5. **Facet the histogram:** Use `facet_wrap()` to create histograms for different categories within your data.
+
+
+# Creating a Box Plot with ggplot2
+
+The `ggplot2` package in R is a versatile tool for creating a wide variety of plots, including box plots. Below is a step-by-step guide on how to create a box plot using `ggplot2`.
+
+## Step 1: Load the ggplot2 Library
+
+First, make sure you have the `ggplot2` library installed and loaded.
+
+```{r}
+# Load the ggplot2 library
+library(ggplot2)
+```
+
+## Step 2: Prepare Your Data
+
+Ensure your data is in a data frame format. For this example, we'll use the built-in `mtcars` dataset.
+
+```{r}
+# View the first few rows of the mtcars dataset
+head(mtcars)
+```
+
+## Step 3: Create a Basic Box Plot
+
+To create a basic box plot, use the `ggplot()` function along with `geom_boxplot()`.
+
+```{r}
+# Create a basic box plot of the 'mpg' (miles per gallon) by 'cyl' (number of cylinders)
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot() +
+  labs(title = "Box Plot of Miles Per Gallon by Cylinder Count",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon")
+```
+
+## Step 4: Customize the Box Plot
+
+You can customize the appearance of the box plot by adjusting the colors, adding labels, and modifying the theme.
+
+```{r}
+# Customized box plot with adjusted colors and labels
+ggplot(mtcars, aes(x = factor(cyl), y = mpg, fill = factor(cyl))) +
+  geom_boxplot(color = "black") +
+  labs(title = "Customized Box Plot of Miles Per Gallon by Cylinder Count",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon") +
+  scale_fill_brewer(palette = "Pastel1") +
+  theme_minimal()
+```
+
+## Step 5: Add Notches to the Box Plot
+
+Adding notches to a box plot can help you see if the medians of two groups are significantly different.
+
+```{r}
+# Box plot with notches
+ggplot(mtcars, aes(x = factor(cyl), y = mpg, fill = factor(cyl))) +
+  geom_boxplot(notch = TRUE, color = "black") +
+  labs(title = "Box Plot with Notches of Miles Per Gallon by Cylinder Count",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon") +
+  scale_fill_brewer(palette = "Pastel1") +
+  theme_minimal()
+```
+
+## Step 6: Add Data Points to the Box Plot
+
+You can overlay data points on the box plot to provide more detail about the data distribution.
+
+```{r}
+# Box plot with overlaid data points
+ggplot(mtcars, aes(x = factor(cyl), y = mpg, fill = factor(cyl))) +
+  geom_boxplot(color = "black", outlier.shape = NA) + # Suppress outliers to add jittered points
+  geom_jitter(width = 0.2, alpha = 0.6) +
+  labs(title = "Box Plot with Data Points of Miles Per Gallon by Cylinder Count",
+       x = "Number of Cylinders",
+       y = "Miles Per Gallon") +
+  scale_fill_brewer(palette = "Pastel1") +
+  theme_minimal()
+```
+
+Simple way:\
+
+```{r}
+boxplot(mtcars$mpg ~ mtcars$cyl)
+
+```
+## Summary
+
+Creating box plots with `ggplot2` involves the following steps:
+
+1. **Load the ggplot2 library:** Use `library(ggplot2)` to load the library.
+2. **Prepare your data:** Ensure your data is in a data frame.
+3. **Create a basic box plot:** Use `ggplot()` with `geom_boxplot()`.
+4. **Customize the box plot:** Adjust colors, labels, and themes using additional arguments and functions.
+5. **Add notches:** Use the `notch` argument in `geom_boxplot()` to add notches.
+6. **Add data points:** Use `geom_jitter()` to overlay data points on the box plot.
+
+
+
