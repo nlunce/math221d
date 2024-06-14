@@ -45,6 +45,8 @@ library(rio)
 library(mosaic)
 library(tidyverse)
 library(car)
+library(ggplot2)
+library(dplyr)
 
 # Load the data
 
@@ -80,9 +82,13 @@ __PRO TIP__: Ask a ton of questions throughout this process! You are not always 
 
 As you look at the whole dataset, think about what the response variable might be and start to think about what factors might impact that response.  Start to **mentally rank** which factors you think might be most impactful.  
 
-__QUESTIONS__: For our data, what do you think will be our response variable?
+__QUESTIONS__: For our data, what do you think will be our response variable?\
 
-What other factors do you think might impact the response variable?
+**The response variable is the Happiness_score.**\
+
+What other factors do you think might impact the response variable?\
+
+**Factors that might impact the Happiness_score include Alcohol consumption and attitudes towards Lying.**\
 
 Keep in mind that there may be multiple response variables to explore.  
 
@@ -133,11 +139,24 @@ table(happiness$Lying)
 
 ```
 
-Are there any values we may need to filter out?
+Are there any values we may need to filter out?\
+
+**There are `#N/A` values in the Dominant_hand and Lying columns.**\
 
 Excel uses `#N/A` as a missing value, but in R this is treated like another possible value.  
 
 Pick 2 more *categorical* variables and list their unique values:
+
+```{r}
+
+unique(happiness$Education)
+unique(happiness$Dominant_hand)
+
+table(happiness$Education)
+table(happiness$Dominant_hand)
+
+
+```
 
 __NOTE__: For now, we are focusing on categorical explanatory variables. Later in the semester we will learn how to compare 2 quantitative variables.
 
@@ -151,7 +170,9 @@ __NOTE__: For now, we are focusing on categorical explanatory variables. Later i
 
 Now that we've spent time with the data, we can formalize our hypotheses and get ready to prepare the data to perform the proper analysis.
 
-__QUESTION__: Which explanatory variables do you think have the biggest impact on happiness?
+__QUESTION__: Which explanatory variables do you think have the biggest impact on happiness?\
+
+**Alcohol consumption and attitudes towards Lying probably have a significant impact on Happiness_score.**
 
 # 3. Prepare the Data
 
@@ -159,13 +180,15 @@ We noticed some irregularities that may need to be addressed to get the most app
 
 Let's begin by seeing if there are differences in happiness for different levels of alcohol use.
 
-__Review__:  What are the irregularities in happiness score and alcohol use?
+__Review__:  What are the irregularities in happiness score and alcohol use?\
+
+**There is a min of -45 and a max of 75**
 
 ```{r}
 
 favstats(happiness$Happiness_score)
 
-# min = , max = 
+# min = -45, max = 75
 
 unique(happiness$Alcohol)
 
@@ -181,10 +204,10 @@ Replace the blanks below to create a new dataset called `alcohol_use` that remov
 ```{r}
 
 alcohol_use <- happiness %>%
-  filter(Happiness_score <= ___, 
-         Happiness_score > ___,
-         Alcohol ___ c("drink a lot", "never")) %>%
-  select(Alcohol, _______________)
+  filter(Happiness_score <= 15, 
+         Happiness_score >= 0,
+         Alcohol %in% c("drink a lot", "never")) %>%
+  select(Alcohol,Happiness_score)
 
 ```
 
@@ -196,18 +219,29 @@ histogram(alcohol_use$Happiness_score)
 
 ```
 
-How would you describe the shape of the distribution?
+How would you describe the shape of the distribution?\
+
+**The distribution of the happiness scores in the alcohol_use data appears to be approximately normal with a slight right skew.**
 
 Create a side-by-side boxplot and summary statistics table for each level of alcohol use:
 
 ```{r}
-
+boxplot(Happiness_score ~ Alcohol, data = alcohol_use,
+        main = "Happiness Scores by Alcohol Use",
+        xlab = "Alcohol Use", ylab = "Happiness Score",
+        col = rainbow(length(unique(alcohol_use$Alcohol))))
+# Summary statistics
+favstats(Happiness_score ~ Alcohol, data = alcohol_use)
 
 ```
 
-How different do the happiness scores appear to be between these two groups?
+How different do the happiness scores appear to be between these two groups?\
 
-Are you disappointed?
+**They don't appear to be very different.**\
+
+Are you disappointed?\
+
+**Not really.**\
 
 It's important to understand that sometimes finding nothing is finding something.
 
@@ -218,17 +252,29 @@ Repeat the above analysis comparing how peoples' happiness scores depend on thei
   1. Create a new dataset called `lying` that excludes the `#N/A` values in `Lying` and the Happiness scores outliers, and includes only "Happiness_score" and "Lying":
 
 ```{r}
-steve <- happieness %>%
+lying <- happiness %>%
   filter(Happiness_score <= 15,
          Happiness_score >= 0,
-         Lying != "#N/A"
-         )
+         Lying != "#N/A") %>%
+  select(Lying, Happiness_score)
 
 ```
 
   2. Create a side-by-side boxplot and summary statistics (using `favstats()`) table for each attitude about Lying:
 
 ```{r}
+
+ggplot(lying, aes(x = Lying, y = Happiness_score, fill = Lying)) +
+  geom_boxplot() +
+  labs(title = "Happiness Scores by Attitude about Lying",
+       x = "Attitude about Lying",
+       y = "Happiness Score") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+favstats(Happiness_score ~ Lying, data = lying)
 
 ```
 
@@ -240,9 +286,29 @@ Pick another **categorical variable** with multiple groups that may impact happi
 Be sure to clean out any 'nunya business' or '#N/A' that might be there and clean out the outliers in happiness:
 
 ```{r}
+education_clean <- happiness %>%
+  filter(Happiness_score <= 15,
+         Happiness_score >= 0,
+         Education != "nunya business") %>%
+  select(Education, Happiness_score)
+
+ggplot(education_clean, aes(x = Education, y = Happiness_score, fill = Education)) +
+  geom_boxplot() +
+  labs(title = "Happiness Scores by Education Level",
+       x = "Education Level",
+       y = "Happiness Score") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+summary_stats_education <- favstats(Happiness_score ~ Education, data = education_clean)
+
 
 ```
 
-What conclusions can you make?
+What conclusions can you make?\
+
+**It appears that education does not make a significant difference on ones happiness score.**
 
 
