@@ -31,22 +31,23 @@ __EXAMPLE__:  A factory claims its light bulbs last, on average, $\mu = 800$ hou
 
 State the Null and alternative Hypotheses:
 
-$$ H_0: \mu $$
+$$ H_0: \mu = 800 $$
 
-$$ H_a: \mu $$
+$$ H_a: \mu < 800 $$
 
-Calculate the Z-score and find the P-value for the test:
+Calculate the Z-score and find the P-value for the test:\
+__p-value= .00885, z-score=-2.371708 if x bar is 785.__
 
 
 ```{r, eval=FALSE, echo=FALSE}
 
 #hypothesized mean and population SD
-mu_0 = 
-sigma = 
+mu_0 = 800
+sigma = 40
 
 # Sample: size, mean, z-score
-n = 
-xbar = 
+n = 40
+xbar = 785
 sigma_xbar = sigma / sqrt(n)
 
 z = (xbar - mu_0) / sigma_xbar
@@ -60,10 +61,11 @@ pnorm(z)
 1-pnorm(z)
 
 
-
+z
 ```
 
-State your conclusion:
+State your conclusion:\
+__If xbar of a sample size of 40 is 785 then the p-score would be low enought to reject the null hypothesis.__
 
 ## Confidence Interval
 
@@ -170,7 +172,8 @@ In this step, we are looking to see if the data are as expected.  Are the column
 
 In the real world, data are messy.  Reviewing the data is a critical part of an analysis.  
 
-Take a look through the personality dataset and see if there are any anomalies that might need to be addressed.
+Take a look through the personality dataset and see if there are any anomalies that might need to be addressed.\
+__Missing value in Extroversion column__
 
 ```{r, echo = FALSE, include=FALSE}
 
@@ -178,10 +181,20 @@ Take a look through the personality dataset and see if there are any anomalies t
 glimpse(big5)
 #head(big5)
 
-favstats(big5$Extroversion)
+fav <- favstats(big5$Extroversion)
+fav
 
 ```
+```{r, echo = TRUE, include=TRUE}
 
+#View(big5)
+#glimpse(big5)
+#head(big5)
+
+fav <- favstats(big5$Extroversion)
+fav
+
+```
 
 ## Step 3:  Visulize the data
 
@@ -199,7 +212,7 @@ histogram(big5$Extroversion, main = "Extroversion Scores", xlab = "Extroversion"
 
 
 ```
-
+__It looks to be slightly left skewed.__
 
 ## Step 4:  Perform the appropriate analysis
 
@@ -227,12 +240,13 @@ t.test(big5$Extroversion, mu = 50, alternative = "greater")
 ```
 
 
-__Q__:  What is the P-value?
+__Q__:  What is the P-value?\
+__4.697e-11__
 
 
-__Q__:  How do we explain our conclusion in context of our research question?  
+__Q__:  How do we explain our conclusion in context of our research question?
 
-__Technical Conclusion__: 
+__Technical Conclusion__: We reject the null hypothesis.
 
 __Contextual Conslusion__: 
 
@@ -256,7 +270,8 @@ t.test(big5$Extroversion, mu = 50, conf.level = .99)$conf.int
 
 ```
 
-Describe in words the interpretation of the confidence interval in context of Extroversion.  
+Describe in words the interpretation of the confidence interval in context of Extroversion.\
+__The 99% confidence interval for the mean Extroversion score of Brother Cannon's students ranges from 54.27 to 59.70. This means that we are 99% confident that the true mean Extroversion score of all Brother Cannon's students falls within this interval.__
 
 
 # Your Turn
@@ -278,19 +293,28 @@ body_temp <- import("https://byuistats.github.io/M221R/Data/body_temp.xlsx")
 
 ### Review the Data
 
-What is the mean and standard deviation of the body temperatures in our data set?
+What is the mean and standard deviation of the body temperatures in our data set?\
+
+__mean=98.23, sd=.74__
 
 ```{r}
+glimpse(body_temp)
+mean_temp <- mean(body_temp$temperature)
+sd_temp <- sd(body_temp$temperature)
+
+mean_temp
+sd_temp
 
 ```
 
 
 ### Visualize the Data
 
-Create a histogram to visualize the body temperature data. Which of the following best describes the distribution of the data?
+Create a histogram to visualize the body temperature data. Which of the following best describes the distribution of the data?\
+__It is approximately normal, maybe right skewed.__
 
 ```{r}
-
+hist(body_temp$temperature, main = "Histogram of Body Temperature", xlab = "Body Temperature (F)", breaks = 10)
 ```
 
 
@@ -302,18 +326,27 @@ Suppose we suspect that the average temperature is different than 98.6
 
 Use a significance level of $\alpha = 0.01$ to test whether the mean body temperature of healthy adults is equal to 98.6 degrees Fahrenheit.
 
-What is the P-value? 
+What is the P-value?\
+__1.272e-08__
 
-Explain our conclusion.
+Explain our conclusion.\
+__We reject the null hypothesis because the p-value is less than the significance level.__
 
 ```{r}
+t_test_result <- t.test(body_temp$temperature, mu = 98.6, alternative = "two.sided", conf.level = 0.99)
 
+p_value <- t_test_result$p.value
+
+t_test_result
+p_value
 ```
 
 
 Create a 99% confidence interval for the true population average temperature of healthy adults.
 
 ```{r}
+conf_interval <- t_test_result$conf.int
 
+conf_interval
 ```
 
