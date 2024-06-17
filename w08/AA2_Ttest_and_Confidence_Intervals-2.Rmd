@@ -1,0 +1,203 @@
+---
+title: "Application Activity 2"
+subtitle: "Hypothesis Testing and Confidence Intervals"
+author: "[your name]"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+warning: false
+---
+
+# Introduction
+
+In this activity, you will execute statistical hypothesis tests and generate confidence intervals for each of the Big 5 personality traits using data collected from a random sample of Brother Cannon's Math 221 students.  
+
+Begin by describing the population of this analysis.  This will determine how broad our conclusions can be. Also include a table of the summary statistics and any visualizations that might tell a story about the data.\
+__The population is brother Cannon's math221 students.__
+```{r}
+
+# Load Libraries
+
+library(tidyverse)
+library(mosaic)
+library(rio)
+
+
+# Load Data
+big5 <- import('https://raw.githubusercontent.com/byuistats/Math221D_Cannon/master/Data/All_class_combined_personality_data.csv')
+
+```
+
+__Agreeableness__
+```{r}
+fav <- favstats(big5$Agreeableness)
+fav
+histogram(big5$Agreeableness)
+```
+
+__Extroversion__
+```{r}
+fav <- favstats(big5$Extroversion)
+fav
+histogram(big5$Extroversion)
+```
+
+__Openness__
+```{r}
+fav <- favstats(big5$Openness)
+fav
+histogram(big5$Openness)
+```
+
+__Neuroticism__
+```{r}
+fav <- favstats(big5$Neuroticism)
+fav
+histogram(big5$Neuroticism)
+```
+
+__Conscientiousness__
+```{r}
+fav <- favstats(big5$Conscientiousness)
+fav
+histogram(big5$Conscientiousness)
+```
+
+
+
+Then, for each personality trait, include:
+
+1. A statement of the null and alternative hypotheses and why you chose the alternative you did.
+1. Choose alpha $\alpha = .5 $
+1. Check that your test requirements are satisfied (`n > 30` or `qqPlot(respons_variable)`)
+1. Run the one-sample t-test and state your conclusion
+1. Calculate a $1-\alpha$ level confidence interval and describe in words what it means
+
+Recall that we can use "favstats()" to get summary statistics, boxplot() and histogram() to get visualizations, and the t.test() function to get hypothesis tests and confidence intervals.  **Be sure to label your plots' axes and include a title.**  
+
+
+
+# Extroversion
+
+H0: Mu = 50
+Ha: Mu >50
+
+alpha = .05
+
+
+```{r}
+# Extroversion
+
+### I'm making a single variable called "extrov" that drops the missing values.  You can do the same thing with the other traits to make analysis a little easier
+extrov <- na.omit(big5$Extroversion) 
+
+t.test(extrov, mu = 50, altenative= "greater")
+
+t.test(extrov, mu = 50, altenative= "two.sided", conf.level = .95)
+```
+
+
+## Conclusion
+
+
+__The p-value is 9.394e-11 which is much lower than our alpha value so we reject the null hypothesis. We have sufficient evidence to suggest that brother Cannon's students average extroverted scores are greater than 50. The confidence interval suggest that the true mean of the sample is between 54.91937 and 59.04598.__
+
+# Agreeableness
+
+
+H0: Mu = 50
+Ha: Mu >50
+
+alpha = .05
+
+
+```{r}
+# Agreeableness
+
+agree <- na.omit(big5$Agreeableness) 
+
+t.test(agree, mu = 50, altenative= "greater")
+
+t.test(agree, mu = 50, altenative= "two.sided", conf.level = .95)
+
+```
+
+## Conclusion
+
+
+__The p-value is  < 2.2e-16 which is much lower than our alpha value so we reject the null hypothesis. We have sufficient evidence to suggest that brother Cannon's students average agreeableness scores are greater than 50. The confidence interval suggest that the true mean of the sample is between 72.14034 and 74.72879.__
+
+# Openness
+
+
+H0: Mu = 50
+Ha: Mu >50
+
+alpha = .05
+
+
+```{r}
+# Openness
+
+open <- na.omit(big5$Openness) 
+
+t.test(open, mu = 50, altenative= "greater")
+
+t.test(open, mu = 50, altenative= "two.sided", conf.level = .95)
+```
+
+## Conclusion
+
+
+__The p-value is  < 2.2e-16 which is much lower than our alpha value so we reject the null hypothesis. We have sufficient evidence to suggest that brother Cannon's students average openness scores are greater than 50. The confidence interval suggest that the true mean of the sample is between 70.20847 and 73.41375.__
+
+
+# Neuroticism
+
+
+H0: Mu = 50
+Ha: Mu >50
+
+alpha = .05
+
+
+
+```{r}
+# Neuroticism
+
+neuro <- na.omit(big5$Neuroticism) 
+
+t.test(neuro, mu = 50, altenative= "greater")
+
+t.test(neuro, mu = 50, altenative= "two.sided", conf.level = .95)
+
+```
+
+## Conclusion
+
+
+__The p-value is 0.004076 which is lower than our alpha value so we reject the null hypothesis. We have sufficient evidence to suggest that brother Cannon's students average neuroticism scores are greater than 50. The confidence interval suggest that the true mean of the sample is between  45.61407 and 49.16618.__
+
+# Conscientiousness
+
+
+H0: Mu = 50
+Ha: Mu >50
+
+alpha = .05
+
+```{r}
+# Conscientiousness
+consc <- na.omit(big5$Conscientiousness) 
+
+t.test(consc, mu = 50, altenative= "greater")
+
+t.test(consc, mu = 50, altenative= "two.sided", conf.level = .95)
+
+```
+
+## Conclusion
+
+
+__The p-value is < 2.2e-16 which is much lower than our alpha value so we reject the null hypothesis. We have sufficient evidence to suggest that brother Cannon's students average conscientiousness scores are greater than 50. The confidence interval suggest that the true mean of the sample is between   59.46172 and 62.69630.__
