@@ -1,0 +1,182 @@
+---
+title: "Independent Sample T-Tests"
+subtitle: "Homework Quiz"
+author: "Nathan Lunceford"
+warning: false
+format:
+  html:
+    self-contained: true
+    code-fold: true
+---
+
+# It's a Date!
+
+## Introduction
+
+Dating Behavior was studied in a speed dating experiment where random matching was generated and created randomization in the number of potential dates.  In a survey to each participant, one question was asked about how important attraction is when they date. The attraction value is on a scale from 0 (not important at all) to 100 (very important).  
+
+The researchers want to determine if  males report to value attractiveness more than females.  Use a level of significance of 0.05.
+
+## Load the Data
+
+```{r}
+library(rio)
+library(tidyverse)
+library(mosaic)
+library(car)
+
+dating <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/dating_attractive_long.csv')
+
+```
+
+## Explore the Data
+
+Create a side-by-side boxplot for the amount of reported importance of attractiveness for each biosex.
+
+Add a title and change the colors of the boxes.
+
+```{r}
+
+
+```
+
+What do you observe?
+
+Create a table of summary statistics for each group (`favstats()`):
+
+
+```{r}
+
+```
+
+
+
+## Perform the Appropriate Analysis
+
+### Hypothesis Test
+
+State your null and alternative hypotheses:
+
+
+__NOTE__: The default for R is to set group order alphabetically.  This means Group 1 = Female.
+
+
+Compare the importance of attractiveness for males and females. 
+
+
+```{r}
+
+qqPlot(dating$Importance, groups = dating$Biosex)
+
+```
+
+Do the data for each group appear normally distributed?
+
+Why is it OK to continue with the analysis?
+
+Perform a t-test.
+
+```{r}
+
+
+```
+
+What is the value of the test statistic?
+
+How many degrees of freedom for this test?
+
+What is the p-value?
+
+What do you conclude?
+
+### Confidence Interval
+
+Create a confidence interval for the difference of the average Importance Score between both groups:
+
+```{r}
+
+
+```
+
+
+
+# Keeping Balance
+
+## Introduction
+
+How difficult is it to maintain your balance while concentrating? Is it more difficult when you are older? Nine elderly people (6 men and 3 women) and eight young men were subjects in an experiment. Each subject stood barefoot on a "force platform" and was asked to maintain a stable upright position and to react as quickly as possible to an unpredictable noise by pressing a hand-held button. The noise came randomly, and the subject concentrated on reacting as quickly as possible. The platform automatically measured how much each subject swayed in millimetres in both the forward/backward and the side-to-side directions. 
+
+The data file side_sway gives the sway observed in the side-to-side direction. Determine if the amount of swaying side-to-side is greater for elderly  people than younger people using a level of significance of 0.05. Let the elderly people be group 1 and the younger people be group 2.
+
+## Load the Data
+
+```{r}
+
+side_sway <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/side_sway_long.csv')
+
+```
+
+## Explore the Data
+
+Create a side-by-side boxplot for the amount of side sway for each age group:
+
+```{r}
+
+
+```
+
+What do you observe?
+
+Create a table of summary statistics for each group (`favstats()`):
+
+```{r}
+
+```
+
+## Perform the Appropriate Analysis
+
+### Hypothesis Test
+
+State your null and alternative hypotheses:
+
+Ho:  
+Ha: 
+
+Perform the appropriate t-test:
+
+```{r}
+
+```
+
+What is the value of the sample test statistic?
+
+How many degrees of freedom does the test statistic have?
+
+What is the P-value?
+
+Can we trust the P-value?  (Central Limit Theorem (n>30)? Normality of differences?)
+
+  a. How many data points in each group?
+  b. Check normality of the side sway measurements for each group
+  
+```{r}
+
+
+```
+
+
+What is your conclusion?
+
+### Confidence Interval
+
+Create a 95% confidence interval for the difference of the average side sway for elderly and young people.  
+
+```{r}
+
+```
+
+
+What is the upper and lower bound of the confidence interval?
+
+Give an explanation of the confidence interval in context of the problem:
+
