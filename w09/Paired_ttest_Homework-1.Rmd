@@ -34,12 +34,21 @@ helmet_fit <- import("https://byuistats.github.io/M221R/Data/quiz/R/helmet_fit.c
 
 ## Step 2: Explore the Data and Generate Hypotheses
 
-Create histograms and summary statistic tables for the measurements for each type of tool:
-
+Create histograms and summary statistic tables for the measurements for each type of tool:\
+__Cardboard__
 ```{r}
+histogram(helmet_fit$cardboard)
+fav <- favstats(helmet_fit$cardboard)
+fav
 
 ```
+__Metal__
+```{r}
+histogram(helmet_fit$metal)
+fav <- favstats(helmet_fit$metal)
+fav
 
+```
 
 ## Step 3: Prepare the data for analysis
 
@@ -48,13 +57,17 @@ Give the summary statistics (favstats) for the *differences* in the measured hea
 What does a negative number mean given the definition of the difference?
 
 ```{r}
-
+diff <- helmet_fit$cardboard - helmet_fit$metal
+fav <- favstats(diff)
+fav
 ```
+__A negative number in the differences means that the metal caliper measurement is larger than the cardboard caliper measurement.__
 
 Create a histogram and a qqPlot of the differences:
 
 ```{r}
-
+histogram(diff)
+qqPlot(diff)
 
 ```
 
@@ -68,27 +81,37 @@ Make the following null and alternative hypothesis correct by deleting what does
 
 $$H_0: \mu_d  = 0$$
 
-$$ H_a: \mu_d < 0$$
+$$ H_a: \mu_d \ne 0$$
 
 ```{r}
 # Perform a t-test for the mean of the differences between cardboard and caliper data
+t_test_results <- t.test(diff, mu = 0, alternative = "two.sided")
+
+# Print the test statistic, degrees of freedom, and p-value
+t_test_results
 
 
 ```
 
-What is the value of the test statistic, $t$?
+What is the value of the test statistic, $t$?\
+__t = 3.1854__
 
-How many degrees of freedom does this test statistics have?  
+How many degrees of freedom does this test statistics have?\
+__df = 17__
 
-What is the P-value?
+What is the P-value?\
+__p-value = 0.005415__
 
 Can we trust this P-value? 
 
-  a. How many differences in our sample? 
+  a. How many differences in our sample?\
+  __18__
   b. Check the `qqPlot()` of the differences for normality:
+  __We can assume normality because the qqPlot shows that the points generally follow a straight line.__
 
 
-State your conclusion about the hypothesis test:
+State your conclusion about the hypothesis test:\
+__Since the p-value (0.005415) is less than the significance level, we reject the null hypothesis. This indicates that there is a statistically significant difference between the head diameter measurements taken with cardboard calipers and metal calipers.__
 
 
 
@@ -97,11 +120,13 @@ State your conclusion about the hypothesis test:
 Create a 95% confidence interval for the true average difference between the cardboard and the metal measurement tools:
 
 ```{r}
-
+conf_int <- t_test_results$conf.int
+conf_int
 ```
 
 
-Give a one-sentence explanation of your confidence interval:
+Give a one-sentence explanation of your confidence interval:\
+__We are 95% confident that the true mean difference in head diameter measurements between the cardboard and metal calipers lies between 0.544 and 2.678.__
 
 
 
@@ -122,22 +147,32 @@ glimpse(cholesterol)
 
 ## Step 2:  Review the Data Generate Hypotheses
 
-
-
 Create histograms and summary statistics tables for the cholesterol measurements at 2 days and at 4 days.
-
-
+__Cholesterol 2 Days__
 ```{r}
+histogram(cholesterol$chol_day2)
+fav <- favstats(cholesterol$chol_day2)
+fav
+
+```
+__Cholesterol 4 Days__
+```{r}
+histogram(cholesterol$chol_day4)
+fav <- favstats(cholesterol$chol_day4)
+fav
 
 ```
 
 ## Step 3:  Prepare the data for analysis
 
-Decide how you are going to define the difference (chol_day2 - chol_day4 or chol_day4 - chol_day2).
+Decide how you are going to define the difference (chol_day2 - chol_day4 or chol_day4 - chol_day2).\
+__I will define the difference as chol_day2 - chol_day4.__
 
-What does a negative number mean:  
+What does a negative number mean:\
+__A negative number means that the cholesterol level is lower at 4 days compared to 2 days, indicating a reduction.__
 
-What is your null and alternative hypotheses:  
+What is your null and alternative hypotheses:\
+
 
 $$H_0: \mu_d  = 0$$
 
@@ -147,10 +182,9 @@ $$ H_a: \mu_d < 0$$
 Create a qqPlot of the differences and determine if you can trust the statistical tests.
 
 ```{r}
-qqPlot()
-
+diff <- cholesterol$chol_day2 - cholesterol$chol_day4
+qqPlot(diff)
 ```
-
 
 ## Step 4:  Perform the appropriate analysis
 
@@ -160,20 +194,22 @@ qqPlot()
 Perform a t-test for the differences.
 
 ```{r}
+t_test_results <- t.test(diff, mu = 0, alternative = "less")
 
-# Decide which column to subtract from 
-diff <- weight_loss$post - weight_loss$pre
-diff
-
+t_test_results
 ```
 
-How many degrees of freedom does the test statistic have:  
+How many degrees of freedom does the test statistic have:\
+__df = 27__
 
-What is the test statistic:
+What is the test statistic:\
+__t = 3.2189__
 
-What is the P-value:
+What is the P-value:\
+__p-value = 0.9983__
 
-State your conclusion in context of the research question:
+State your conclusion in context of the research question:\
+__Given the p-value (0.9983), which is greater than alpha, we fail to reject the null hypothesis. This means that there is not enough evidence to suggest that cholesterol levels are significantly lower four days after the heart attack compared to two days after the heart attack.__
 
 
 ### Confidence Interval
@@ -181,12 +217,15 @@ State your conclusion in context of the research question:
 Create a 95% confidence interval for the difference in cholesterol scores:
 
 ```{r}
-t.test(diff, mu=0, alternative = "less")
+conf_int <- t_test_results$conf.int
+conf_int
 
 ```
 
 
 Explain your confidence interval in context of the research question:\
-Reject H0, suff ev to reject that to suggest that h the weight loss program reduced weight. 
+__The 95% confidence interval for the difference in cholesterol levels between 2 days and 4 days is (−∞,35.60725) suggesting that we cannot conclude a significant reduction in cholesterol levels from day 2 to day 4.__
+
+
 
 
