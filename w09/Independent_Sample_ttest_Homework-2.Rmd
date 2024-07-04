@@ -24,6 +24,7 @@ library(rio)
 library(tidyverse)
 library(mosaic)
 library(car)
+library(ggplot2)
 
 dating <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/dating_attractive_long.csv')
 
@@ -36,17 +37,23 @@ Create a side-by-side boxplot for the amount of reported importance of attractiv
 Add a title and change the colors of the boxes.
 
 ```{r}
+boxplot(Importance ~ Biosex, data = dating, 
+        main = "Importance of Attractiveness by Biosex", 
+        xlab = "Biosex", ylab = "Importance of Attractiveness",
+        col = c("pink", "blue"))
 
 
+legend("topright", legend = c("Female", "Male"), fill = c("pink", "blue"))
 ```
 
-What do you observe?
+What do you observe?\
+__It appears that males have a slightly higher level of importance when it comes to attractiveness__
 
 Create a table of summary statistics for each group (`favstats()`):
 
 
 ```{r}
-
+favstats(Importance ~ Biosex, data = dating)
 ```
 
 
@@ -56,6 +63,10 @@ Create a table of summary statistics for each group (`favstats()`):
 ### Hypothesis Test
 
 State your null and alternative hypotheses:
+
+$$ H_0: \mu_{male} = \mu_{female} $$
+
+$$ H_a: \mu_{male} > \mu_{female} $$
 
 
 __NOTE__: The default for R is to set group order alphabetically.  This means Group 1 = Female.
@@ -70,31 +81,38 @@ qqPlot(dating$Importance, groups = dating$Biosex)
 
 ```
 
-Do the data for each group appear normally distributed?
+Do the data for each group appear normally distributed?\
+__Yes, they appear roughly normally distributed.__
 
-Why is it OK to continue with the analysis?
+Why is it OK to continue with the analysis?\
+__The sample sizes are above 30 and the samples are random.__
 
 Perform a t-test.
 
 ```{r}
-
+t_test <- t.test(dating$Importance ~ dating$Biosex, alternative = "less")
+t_test
 
 ```
 
-What is the value of the test statistic?
+What is the value of the test statistic?\
+__t = -8.9016__
 
-How many degrees of freedom for this test?
+How many degrees of freedom for this test?\
+__df = 495.36__
 
-What is the p-value?
+What is the p-value?\
+__p-value < 2.2e-16__
 
-What do you conclude?
+What do you conclude?\
+__Since the p-value is significantly smaller than 0.05, we reject the null hypothesis. This means we have strong evidence suggesting that males report valuing attractiveness more than females.__
 
 ### Confidence Interval
 
 Create a confidence interval for the difference of the average Importance Score between both groups:
 
 ```{r}
-
+t.test(dating$Importance ~ dating$Biosex, conf.level = .99)$conf.int
 
 ```
 
@@ -121,16 +139,22 @@ side_sway <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Dat
 Create a side-by-side boxplot for the amount of side sway for each age group:
 
 ```{r}
+boxplot(Sidesway ~ Age_Group, data = side_sway, 
+        main = "Side Sway by Age Group", 
+        xlab = "Age Group", ylab = "Side Sway (mm)",
+        col = c("lightblue", "lightgreen"))
 
+legend("topright", legend = c("Elderly", "Young"), fill = c("lightblue", "lightgreen"))
 
 ```
 
-What do you observe?
+What do you observe?\
+__Elderly people appear to have a higher median side sway.__
 
 Create a table of summary statistics for each group (`favstats()`):
 
 ```{r}
-
+favstats(Sidesway ~ Age_Group, data = side_sway)
 ```
 
 ## Perform the Appropriate Analysis
@@ -139,44 +163,56 @@ Create a table of summary statistics for each group (`favstats()`):
 
 State your null and alternative hypotheses:
 
-Ho:  
-Ha: 
+$$ H_0: \mu_{elderly} = \mu_{young} $$
+
+$$ H_a: \mu_{elderly} > \mu_{young} $$
 
 Perform the appropriate t-test:
 
 ```{r}
-
+t_test <- t.test(side_sway$Sidesway ~ side_sway$Age_Group, alternative = "greater")
+t_test
 ```
 
-What is the value of the sample test statistic?
+What is the value of the sample test statistic?\
+__t = 1.9228__
 
-How many degrees of freedom does the test statistic have?
+How many degrees of freedom does the test statistic have?\
+__df = 10.5__
 
-What is the P-value?
+What is the P-value?\
+__p-value = 0.04102__
 
 Can we trust the P-value?  (Central Limit Theorem (n>30)? Normality of differences?)
 
-  a. How many data points in each group?
+  a. How many data points in each group?\
+  __elderly = 9__\
+  __young = 8__
   b. Check normality of the side sway measurements for each group
+
   
 ```{r}
-
-
+qqPlot(side_sway$Sidesway, groups = side_sway$Age_Group)
 ```
 
 
-What is your conclusion?
+What is your conclusion?\
+__They appear to be normally distributed so we can trust the P-value.__
 
 ### Confidence Interval
 
 Create a 95% confidence interval for the difference of the average side sway for elderly and young people.  
 
 ```{r}
-
+conf_int <- t_test$conf.int
+conf_int
 ```
 
 
-What is the upper and lower bound of the confidence interval?
+What is the upper and lower bound of the confidence interval?\
+__Lower Bound: 0.4393617__\
+__Upper Bound: Infinity__
 
-Give an explanation of the confidence interval in context of the problem:
+Give an explanation of the confidence interval in context of the problem:\
+__Given that the entire confidence interval is positive and does not include zero, we can conclude that there is a statistically significant difference between the two groups. Elderly people exhibit greater side sway than younger people when reacting to an unpredictable noise while maintaining balance.__
 
