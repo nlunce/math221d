@@ -1,0 +1,315 @@
+---
+title: "Hypothesis Testing for Means"
+subtitle: "Unit Assessment"
+author: "Nathan Lunceford"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+warning: false
+---
+
+# Introduction
+
+This assessment is designed as a practice of several analyses we have covered in unit 2.  Each example will give background for the research questions.  
+
+You are responsible for determining the appropriate alternative hypothesis for each question based on context.  You will also choose a significance level, $\alpha$.
+
+Do all work __ON YOUR OWN__.  
+
+You may use class notes, assignments, Google, ChatGPT, anything EXCEPT other people.  
+
+Don't forget to load the libraries.
+
+```{r, include=FALSE}
+library(tidyverse)
+library(rio)
+library(mosaic)
+library(car)
+
+```
+
+
+
+# One-sample Z
+
+There are estimated 234 nesting pairs of bald eagles in Idaho.  With a chick survival rate of about 72% and nesting pairs laying 1-3 eggs, the population in Idaho is expected to grow by, on average, 168.48 with a standard deviation of 16.86.
+
+Favorable nesting conditions this year suggest that survival rates should be higher than expected.  We randomly select 35 nesting sites and calculate the survival rate to be 82%, meaning we expect population to grow by 187.2.  
+
+Test to see if this growth is significantly higher than historical growth.
+
+Be sure to:  
+
+1. State your Null and Alternative hypothesis\
+$$ H_0: \mu = 168.48$$
+$$ H_a: \mu > 168.48$$
+2. State your alpha (and confidence level = 1-alpha)\
+$$ \alpha = .05$$
+Confidence level: 95%\
+
+3. Find the P-value\
+__P-value = 2.537082e-11__
+4. State your conclusion\
+__Since the P-value is much smaller than the significance level, we reject the null hypothesis. This means that the growth in the bald eagle population is significantly higher than the historical growth.__\
+5. Create a confidence interval and explain it\
+__This 95% confidence interval means we are 95% confident that the true mean growth of the bald eagle population in Idaho, given the favorable conditions, lies between 181.61 and 192.79. Since this interval does not include the historical mean of 168.48, it supports our conclusion that the growth is significantly higher.__\
+
+6. Address the z-test requirements (Does CLT apply?)\
+
+- __The sample size should be large (typically \( n > 30 \)) or the population should be normally distributed.__
+- __The sample size here is 35, which is sufficiently large for the Central Limit Theorem (CLT) to apply, making the sampling distribution of the sample mean approximately normal.__
+- __Additionally, we have the population standard deviation, allowing us to use the Z-test.__
+
+__Therefore, the requirements for the Z-test are satisfied.__
+
+```{r}
+xbar <- 187.2
+mu <- 168.48
+sigma <- 16.86
+n <- 35
+sigma_xbar <- sigma / sqrt(n)
+
+z <- (xbar - mu) / sigma_xbar
+  
+#pnorm()
+
+1-pnorm(z)
+
+# Confidence Interval: x_bar +/- z_star * sigma_xbar
+z_star <- qnorm(0.975)
+lower_bound <- xbar - z_star * sigma_xbar
+upper_bound <- xbar + z_star * sigma_xbar
+conf_interval <- c(lower_bound, upper_bound)
+conf_interval
+
+```
+
+
+# One-sample t
+
+The label on a protein bar wrapper claims 20 grams of protein.  We select a random sample of 31 bars and test to see if there is significantly less protein than advertised.  
+
+Be sure to:  
+
+1. State your Null and Alternative hypothesis\
+$$ H_0: \mu = 20 $$
+$$ H_a: \mu < 20 $$
+2. State your alpha (and confidence level = 1-alpha)\
+$$ \alpha = .05$$
+Confidence level: 95%\
+
+3. Find the P-value\
+__ p-value = 0.9977__\
+
+4. State your conclusion\
+__Since the P-value (0.9977) is much greater than the significance level, we fail to reject the null hypothesis. This means there is not enough evidence to suggest that the average protein content is significantly less than 20 grams.__\
+
+5. Create a confidence interval and explain it\
+__The 95% confidence interval provides a range within which we are 95% confident that the true mean protein content lies. The lower bound is negative infinity, indicating that the true mean could be any value less than or equal to 22.17479 grams. Since this interval includes the claimed value of 20 grams, it supports our conclusion that there is no significant evidence against the claim.__
+
+6. Include a histogram of the data\
+__See below.__
+
+7. Address the t-test requirements\
+- __We assume the sample is random.__
+- __With a sample size of 31, the Central Limit Theorem suggests that the sampling distribution of the mean will be approximately normal even if the population distribution is not perfectly normal.__
+__Therefore, the requirements for the t-test are satisfied.__ 
+
+```{r}
+# Data from (https://www.jmp.com/en_us/statistics-knowledge-portal/t-test/one-sample-t-test.html)
+
+data <- c(20.70, 27.46, 22.15, 19.85, 21.29, 24.75, 20.75, 22.91, 25.34, 20.33, 21.54, 21.08, 22.14, 19.56, 21.10, 18.04, 24.12, 19.95, 19.72, 18.28, 16.26, 17.46, 20.53, 22.12, 25.06, 22.44, 19.08, 19.88, 21.39, 22.33, 25.79)
+
+```
+
+```{r}
+t_test <- t.test(data, mu = 20, alternative = "less")
+t_test
+```
+```{r}
+conf_interval <- t_test$conf.int
+
+conf_interval
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(data.frame(Protein = data), aes(x = Protein)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(title = "Histogram of Protein Content in Bars", x = "Protein Content (grams)", y = "Frequency")
+
+```
+
+
+# 2-sample t:  Dependent (Matched Pairs)
+
+An instructor would like to use 2 exams in her classes next year.  She hopes they are comparable, meaning as long as they're not too different from each other, she feels confident using either exam.  
+
+Each student took both exams.
+
+Be sure to:
+
+1. Define your difference and state your Null and Alternative hypothesis.\
+$$ H_0: \mu_{diff} = 0 $$
+$$ H_a: \mu_{diff} \ne 0 $$
+
+2. State your alpha (and confidence level = 1-alpha)\
+$$ \alpha = .05$$
+Confidence level: 95%\
+
+3. Find the P-value\
+__p-value = 0.465__
+4. State your conclusion\
+__Since the P-value (0.465) is much greater than the significance level, we fail to reject the null hypothesis. This means there is not enough evidence to suggest a significant difference between the scores of the two exams.__
+5. Create a confidence interval and explain it\
+__The 95% confidence interval provides a range within which we are 95% confident that the true mean difference between the two exam scores lies. Since this interval includes 0, it supports our conclusion that there is no significant difference between the exam scores.__
+6. Include a histogram of the differences\
+__See below.__
+7. Address the t-test requirements\
+- __We assume the sample is random.__
+- __The sample size is less than 30 but the qqPlot of the differences shows that they are approximately normally distributed.__\
+__Therefore, the requirements for the t-test are satisfied.__
+
+
+```{r}
+# Data and example come from JMP (https://www.jmp.com/en_us/statistics-knowledge-portal/t-test/paired-t-test.html)
+
+exam <- import('https://raw.githubusercontent.com/byuistats/Math221D_Cannon/master/Data/Exam_Comparison.csv')
+glimpse(exam)
+```
+```{r}
+exam <- exam %>% mutate(Difference = `Exam 1 Score` - `Exam 2 Score`)
+t_test <- t.test(exam$Difference, mu = 0, alternative = "two.sided")
+t_test
+
+conf_interval <- t_test$conf.int
+conf_interval
+```
+```{r}
+ggplot(exam, aes(x = Difference)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(title = "Histogram of Differences in Exam Scores", x = "Difference in Scores", y = "Frequency")
+```
+
+```{r}
+qqPlot(exam$Difference)
+```
+
+
+# 2-sample t:  Independent
+
+We would like to see if women have a higher body fat percent than men.  We randomly select 10 Females and 13 males and collect their body fat percents.
+
+Be sure to:
+
+1. State your Null and Alternative hypothesis\
+$$ H_0: \mu_f = \mu_m$$
+$$ H_a: \mu_f > \mu_m$$
+2. State your alpha (and confidence level = 1-alpha)\
+$$ \alpha = .05$$
+Confidence level: 95%\
+
+3. Find the P-value\
+__p-value = 0.05909__\
+4. State your conclusion\
+__Since the P-value (0.05909) is greater than the significance level, we fail to reject the null hypothesis. This means there is not enough evidence to suggest that the mean body fat percentage of females is greater than that of males at the 0.05 significance level.__
+5. Create a confidence interval and explain it\
+__The 95% confidence interval provides a range within which we are 95% confident that the true difference in mean body fat percentage between females and males lies. The lower bound is -0.3044232, indicating that the true mean difference could be slightly less than zero. Since this interval includes zero, it supports our conclusion that there is no significant difference between the body fat percentages of females and males.__\
+
+6. Include a side-by-side boxplot for the groups\
+__See below.__
+7. Address the t-test requirements\
+- __We assume the samples are random.__
+- __The sample size is less than 30 but the qqPlot of the body_fat_percent shows that they are approximately normally distributed.__\
+__Therefore, the requirements for the t-test are satisfied.__
+
+```{r}
+
+body_fat <- import('https://raw.githubusercontent.com/byuistats/Math221D_Cannon/master/Data/body_fat_percent.csv')
+glimpse(body_fat)
+
+```
+
+```{r}
+t_test <- t.test(body_fat$body_fat_percent ~ body_fat$Gender, alternative = "greater")
+t_test
+
+conf_interval <- t_test$conf.int
+conf_interval
+```
+
+```{r}
+ggplot(body_fat, aes(x = Gender, y = body_fat_percent, fill = Gender)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Body Fat Percentage by Gender", x = "Gender", y = "Body Fat Percentage") +
+  theme_minimal()
+```
+```{r}
+qqPlot(body_fat$body_fat_percent)
+```
+
+
+# ANOVA
+
+A manufacturer has received complaints that an adhesive's efficacy is variable.  Viscosity of an adhesive is related to it's effectiveness.  You decide to randomly select 5 bottles of adhesive from 5 different production batches and see if there are differences between the batches (called lots in the data.)
+
+Be sure to:
+
+1. State your Null and Alternative hypothesis\
+$$H_o: \mu_1 = \mu_2 = ...\mu_k$$
+
+$$H_a: \text{at least one } \mu_k \text{ is different}$$
+2. State your alpha\
+$$ \alpha = .05$$
+
+3. Find the P-value\
+__p-value = 0.00117__
+4. State your conclusion\
+__Since the P-value (0.00117) is less than the significance level, we reject the null hypothesis. This means there is enough evidence to suggest that at least one batch mean is different from the others__
+5. Include side-by-side boxplot for all groups\
+__See below.__
+6. Address the ANOVA requirements\
+  a. Check for equal standard deviation (is the ratio of the largest SD / smallest SD greater than 2?)\
+  __The ratio is less than 2.__\
+  b. Check Normality of the residuals (`qqPlot()`)\
+  __We can conclude that the standard deviations are approximately equal.__\
+
+
+
+
+```{r}
+# Example and data come from the JMP statistical software website
+# https://www.jmp.com/en_us/statistics-knowledge-portal/one-way-anova.html
+
+
+viscosity <- import('https://raw.githubusercontent.com/byuistats/Math221D_Cannon/master/Data/Viscosity_anova.csv')
+glimpse(viscosity)
+
+```
+
+
+```{r}
+anova_result <- aov(Viscosity ~ Lot, data = viscosity)
+summary(anova_result)
+```
+```{r}
+ggplot(viscosity, aes(x = Lot, y = Viscosity, fill = Lot)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Viscosity by Lot", x = "Lot", y = "Viscosity") +
+  theme_minimal()
+```
+```{r}
+sds <- favstats(Viscosity ~ Lot, data = viscosity)$sd
+
+# Compare the max/min to 2
+
+max(sds) / min(sds)
+```
+
+```{r}
+qqPlot(anova_result$residuals, main = "QQ Plot of Residuals")
+
+```
+
