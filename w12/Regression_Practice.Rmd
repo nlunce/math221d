@@ -1,0 +1,406 @@
+---
+title: "Regression Practice"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+warning: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, error = TRUE)
+```
+
+
+# Introduction
+
+In this assignment, you will practice regression analysis including:
+
+  * Plotting bivariate data with a regression line
+  * Calculating and interpreting the correlation coefficient, r
+  * Fitting a linear regression analysis
+  * Verifying if a linear model is model is adequate:
+    * Checking for linearity (scatterplot)
+    * Checking for constant variance (`plot(lm_output, which=1)`)
+    * Checking for normality of residuals (`qqPlot(lm_output$residuals)`)
+    
+```{r}
+
+library(tidyverse)
+library(mosaic)
+library(rio)
+library(car)
+
+```
+
+# Car Prices and Mileage
+
+<p align="center">
+<img src="https://github.com/byuistats/Math221D_Cannon/raw/master/Images/Accura_MDX.png" width="310" height="200">
+</p>
+
+
+You are interested in purchasing an all wheel drive Acura MDX for those slick Rexburg winters.  You found what you think is a good deal based on a low-mileage 2020 model but you'd like to be sure.  You go on Autotrader.com and randomly select 23 Acura MDX's and collect Price and Mileage information.
+
+Load the data and use R to answer the questions below.  
+
+```{r}
+
+cars <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/acuraMDX_price_vs_mileage.csv')
+glimpse(cars)
+```
+
+Before you begin:
+
+__What is the response/dependent variable?__\
+Price\
+
+__What is the explanatory variable__\
+Mileage\
+__What do you think is the nature of the relationship between the two?__\
+Likely negative; as mileage increases, price decreases.\
+__How strong do you think the relationship is?__\
+Moderately strong.\
+
+## Plot the Data and calculate r
+
+```{r}
+plot(cars$Mileage, cars$`MDX Price`, main="Price vs Mileage", xlab="Mileage", ylab="Price", pch=19, col="blue")
+
+# Calculating the correlation coefficient
+cor(cars$Mileage, cars$`MDX Price`)
+
+```
+
+
+__Does the relationship look linear?__\
+Yes\
+
+__What is the correlation coefficient, r?__\
+-0.8185192
+
+__What does this r show?__\
+Strong negative linear relationship between mileage and price.\
+
+
+## Fit a Linear Regression Model
+
+```{r}
+
+lm_output <- lm(`MDX Price` ~ Mileage, data = cars)
+
+# Summary of the model
+summary(lm_output)
+
+```
+
+Add the regression line to your chart:
+
+```{r}
+# Sometimes you have to run the whole chunk with plot() and the abline() together:
+
+#plot()
+#abline(lm_output$coefficients)
+plot(cars$Mileage, cars$`MDX Price`, main="Price vs Mileage with Regression Line", xlab="Mileage", ylab="Price", pch=19, col="blue")
+abline(lm_output, col="red")
+
+```
+
+__What is the slope of the regression line, and what does it mean?__\
+
+
+The slope of the regression line is -5.051e-02. This means that for every additional mile driven, the price of the Acura MDX decreases by approximately $0.05051. This negative slope indicates a negative relationship between mileage and price.\
+
+
+__What is the intercept and what does it mean?__\
+
+The intercept is 1.793e+04. The intercept represents the estimated price of the Acura MDX when the mileage is zero. In this context, it is the starting price when the car is new (or has no mileage).\
+
+__What is your p-value?__\
+
+1.81e-06\
+
+
+__What is your conclusion?__\
+
+There is a strong and statistically significant negative relationship between the mileage of the Acura MDX and its price. As mileage increases, the price decreases significantly.\
+
+
+__What is the confidence interval for the slope?__\
+[-0.0666, -0.0344]\
+
+```{r}
+confint(lm_output)
+```
+
+Interpret the confidence interval.\
+__The 95% confidence interval for the slope ranges from [-0.0666, -0.0344]. This interval does not include zero, which confirms that the relationship between mileage and price is statistically significant. The negative values in the interval reinforce the negative relationship between mileage and price.__
+
+## Check Model Requirements
+
+Check the normality of the residuals:
+
+```{r}
+qqPlot(lm_output$residuals)
+
+```
+
+Check for constant variance (Residual by Predicted plot):
+
+```{r}
+plot(lm_output, which = 1)
+```
+
+
+Lastly, the car you're interested in buying has around 100,000 miles and costs $11,200.  Could this be considered a good deal?  Why?\
+__The predicted price for a car with 100,000 miles is approximately $12,882.48. Since the actual price of $11,200 is below the lower bound of the confidence interval ($11,778.82), it suggests that $11,200 is a good deal for a car with 100,000 miles.__
+
+```{r}
+deal_prediction <- predict(lm_output, newdata = data.frame(Mileage = 100000), interval = "confidence")
+deal_prediction
+```
+
+
+# Manatee Deaths and Motorboat Registrations in Florida
+<p align="center">
+<img src="https://github.com/byuistats/Math221D_Cannon/raw/master/Images/manatees1.png" width="300" height="300">
+</p>
+
+Florida is a fabulous place for experiencing wildlife and recreation.  Unfortunately, sometimes those two activities conflict.
+
+Researchers collected over 30 years of data about water craft registrations (motor and non-motor boats) and manatee deaths.  The goal of the research is to evaluate the relationship between boat registrations and manatee deaths.
+
+Before you begin:
+
+__What is the response/dependent variable?__\
+
+Manatee deaths\
+
+__What is the explanatory variable__\
+
+Motorboat registrations\
+
+__What do you think is the nature of the relationship between the two?__\
+
+Likely positive; more registrations might lead to more manatee deaths.\
+
+
+__How strong do you think the relationship is?__\
+
+Not super strong.\
+
+
+Load the data:
+```{r}
+manatees <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/manatees.csv')
+glimpse(manatees)
+```
+
+## Plot the Data and calculate r
+
+```{r}
+plot(manatees$`Power Boats (in 1000's)`, manatees$Manatees, main="Manatee Deaths vs Motorboat Registrations", xlab="Motorboat Registrations", ylab="Manatee Deaths", pch=19, col="blue")
+
+
+cor(manatees$`Power Boats (in 1000's)`, manatees$Manatees)
+
+```
+
+__Does the relationship look linear?__\
+
+Yes\
+
+__What is the correlation coefficient, r?__
+
+0.9376368\
+
+__What does this r show?__
+
+This shows a very strong positive correlation.
+
+
+## Fit a Linear Regression Model
+
+```{r}
+lm_output_manatees <- lm(Manatees ~ `Power Boats (in 1000's)`, data = manatees)
+
+
+summary(lm_output_manatees)
+
+```
+
+Add the regression line to your chart:
+
+```{r}
+plot(manatees$`Power Boats (in 1000's)`, manatees$Manatees, main="Manatee Deaths vs Motorboat Registrations with Regression Line", xlab="Motorboat Registrations (in 1000's)", ylab="Manatee Deaths", pch=19, col="blue")
+abline(lm_output_manatees, col="red")
+
+```
+
+__What is the slope of the regression line, and what does it mean?__\
+
+The slope of the regression line is 0.1291. This means that for each additional thousand motorboat registrations, the number of manatee deaths increases by approximately 0.1291\
+
+
+__What is the intercept and what does it mean?__\
+
+The intercept is −42.53. This represents the estimated number of manatee deaths when there are zero motorboat registrations.\
+
+__What is your p-value?__\
+
+he p-value for the slope is < 2e-16, indicating a statistically significant relationship between motorboat registrations and manatee deaths.
+
+
+__What is your conclusion?__\
+
+There is a strong and statistically significant positive relationship between the number of motorboat registrations and manatee deaths. As motorboat registrations increase, the number of manatee deaths also increases significantly.\
+
+
+__What is the confidence interval for the slope?__\
+
+[0.1122, 0.1461]\
+
+```{r}
+confint(lm_output_manatees)
+
+```
+
+__Interpret the confidence interval:__\
+
+The 95% confidence interval for the slope is approximately [0.1122, 0.1461]. This range does not include zero, indicating a significant relationship.\
+
+## Check Model Requirements
+
+Check the normality of the residuals:
+
+```{r}
+qqPlot(lm_output_manatees$residuals)
+
+```
+
+Check for constant variance (Residual by Predicted plot):
+
+```{r}
+plot(lm_output_manatees, which = 1)
+
+
+```
+
+# MCAT Score and GPA
+<p align="center">
+<img src="https://github.com/byuistats/Math221D_Cannon/raw/master/Images/MCAT_official_logo.png" width="300" height="200">
+</p>
+
+
+
+The MCAT is an entrance exam for medical schools.  It seems likely that there is a relationship between your undergraduate GPA and how well you do on the MCAT.  
+
+GPA and MCAT score data were collected on 55 prospective medical students.  
+
+Before you begin:
+
+__What is the response/dependent variable?__\
+
+MCAT score\
+
+__What is the explanatory variable__\
+
+GPA\
+
+__What do you think is the nature of the relationship between the two?__\
+
+Likely positive; higher GPA might lead to higher MCAT scores.\
+
+__How strong do you think the relationship is?__\
+
+Moderately strong.\
+
+
+Load the data:
+```{r}
+mcat <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/mcat_gpa.csv')
+glimpse(mcat)
+```
+
+## Plot the Data and calculate r
+
+```{r}
+plot(mcat$GPA, mcat$MCAT, main="MCAT Score vs GPA", xlab="GPA", ylab="MCAT Score", pch=19, col="blue")
+
+cor(mcat$GPA, mcat$MCAT)
+
+```
+
+__Does the relationship look linear?__\
+
+Somewhat\
+
+__What is the correlation coefficient, r?__\
+
+0.5414202\
+
+__What does this r show?__\
+
+Moderate positive linear relationship between GPA and MCAT scores.\
+
+
+## Fit a Linear Regression Model
+
+```{r}
+lm_output_mcat <- lm(MCAT ~ GPA, data = mcat)
+
+summary(lm_output_mcat)
+```
+
+Add the regression line to your chart:
+
+```{r}
+# Sometimes you have to do the plot() and the abline() in one chunk and run the whole thing:
+plot(mcat$GPA, mcat$MCAT, main="MCAT Score vs GPA with Regression Line", xlab="GPA", ylab="MCAT Score", pch=19, col="blue")
+abline(lm_output_mcat, col="red")
+
+```
+
+__What is the slope of the regression line, and what does it mean?__\
+
+The slope of the regression line is 9.104. This means that for each unit increase in GPA, the MCAT score increases by approximately 9.104 points.
+
+__What is the intercept and what does it mean?__\
+
+The intercept is 3.923. This represents the estimated MCAT score when the GPA is zero.\
+
+__What is your p-value?__\
+
+The p-value for the slope is 1.97e-05, indicating a statistically significant relationship between GPA and MCAT scores.\
+
+__What is your conclusion?__\
+
+There is a moderate and statistically significant positive relationship between GPA and MCAT scores. As GPA increases, the MCAT scores also increase significantly.\
+
+__What is the confidence interval for the slope?__\
+
+[5.208, 13.000]\
+```{r}
+confint(lm_output_mcat)
+
+```
+
+__Interpret the confidence interval:__\
+
+The 95% confidence interval for the slope is approximately [5.208, 13.000]. This range does not include zero, indicating a significant relationship.\
+
+## Check Model Requirements
+
+Check the normality of the residuals:
+
+```{r}
+qqPlot(lm_output_mcat$residuals)
+
+```
+
+Check for constant variance (Residual by Predicted plot):
+
+```{r}
+plot(lm_output_mcat, which = 1)
+
+```
+

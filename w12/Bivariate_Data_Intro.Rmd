@@ -1,0 +1,133 @@
+---
+title: "Introducing the Bivariate Data"
+subtitle: "A Better Way to Visualize Data"
+format:
+  html:
+    self-contained: true
+    code-fold: true
+warning: false
+---
+
+```{r}
+
+library(tidyverse)
+library(mosaic)
+library(rio)
+
+geyser <- import('https://byuistats.github.io/BYUI_M221_Book/Data/OldFaithful.xlsx')
+#names(geyser)
+
+math <- import('https://byuistats.github.io/BYUI_M221_Book/Data/MathSelfEfficacy.xlsx')
+#names(math)
+
+
+real_estate <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/MadisonCountyRealEstate.xlsx')
+body_measures <- import('https://github.com/byuistats/Math221D_Cannon/raw/master/Data/BodyMeasurementsCorrected.xlsx')
+```
+
+
+# Correlation Coefficients
+
+What does the correlation coefficient, r, quantify?
+
+What does it mean if the correlation coefficient, r, is negative?
+
+
+# Geyser Data
+
+## Scatter plot
+
+Make a scatter plot showing the relationship between wait time and the duration of the next eruption.
+
+Which variable is the Explanatory variable?  Which is the Response?
+
+```{r}
+
+#plot()
+
+```
+
+Before looking at the Correlation Coefficient, r, describe in words the direction and strength of the relationship.  Does it look linear?
+
+## Correlation Coefficient
+
+```{r}
+
+#cor()
+
+```
+
+
+
+# Geyser Data
+
+## Scatter plot
+
+Make a scatter plot showing the relationship between the self reported confidence rating and their test score.
+
+Which variable is the Explanatory variable?  Which is the Response?
+
+
+```{r}
+
+#plot()
+
+```
+
+Before looking at the Correlation Coefficient, r, describe in words the direction and strength of the relationship.  Does it look linear?
+
+## Correlation Coefficient
+
+```{r}
+
+#cor()
+
+```
+
+
+```{r}
+plot(real_estate$Age, real_estate$ListPrice,
+     main = "Scatterplot of Home Prices vs. Age of Homes",
+     xlab = "Age of Homes",
+     ylab = "List Price of Homes",
+     pch = 19,  # Plotting character (solid circle)
+     col = "blue")  # Color of the points
+```
+
+
+
+```{r}
+correlation <- cor(body_measures$Height, body_measures$Weight)
+correlation
+```
+
+
+```{r}
+plot(body_measures$Height, body_measures$Weight,
+     main = "Scatterplot of Height vs. Weight",
+     xlab = "Height (inches)",
+     ylab = "Weight (pounds)",
+     pch = 19,  # Plotting character (solid circle)
+     col = "blue")  # Color of the points
+```
+
+```{r}
+# Given values
+mu <- 1.59
+sigma <- 0.042
+n <- 20
+x_bar <- 1.57
+
+# Compute the standard error of the mean
+standard_error <- sigma / sqrt(n)
+
+# Calculate the Z-score
+z_score <- (x_bar - mu) / standard_error
+
+# Calculate the probability
+probability <- pnorm(z_score)
+
+# Print the result
+print(probability)
+```
+
